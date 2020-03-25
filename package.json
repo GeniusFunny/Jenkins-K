@@ -1,0 +1,28 @@
+{
+  "name": "jenkins-k",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeniusFunny/Jenkins-K.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GeniusFunny/Jenkins-K/issues"
+  },
+  "homepage": "https://github.com/GeniusFunny/Jenkins-K#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "jenkins-node-api": "^0.1.0",
+    "koa": "^2.11.0",
+    "koa-router": "^8.0.8",
+    "mysql": "^2.18.1",
+    "redis": "^3.0.2"
+  }
+}
