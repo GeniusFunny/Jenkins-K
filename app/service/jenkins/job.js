@@ -7,10 +7,11 @@ class JenkinsJobService extends Service {
     this.jenkinsJob = jenkins.jobAPI;
     this.jenkinsRequest = jenkins.request.bind(this.app.jenkins);
   }
-  async getInfo(name) {
+  async index() {
     let res
     try {
-      res = await this.jenkinsRequest(this.jenkinsJob.getInfo(name));
+      res = await this.jenkinsRequest(this.app.jenkins.list());
+      res = res.jobs;
       res.code = 1;
     } catch(e) {
       res = {
@@ -20,10 +21,10 @@ class JenkinsJobService extends Service {
     }
     return res;
   }
-  async enable(name) {
+  async show(id) {
     let res
     try {
-      res = await this.jenkinsRequest(this.jenkinsJob.enable(name));
+      res = await this.jenkinsRequest(this.jenkinsJob.getInfo(id));
       res.code = 1;
     } catch(e) {
       res = {
@@ -33,10 +34,10 @@ class JenkinsJobService extends Service {
     }
     return res;
   }
-  async disable(name) {
+  async enable({job}) {
     let res
     try {
-      res = await this.jenkinsRequest(this.jenkinsJob.disable(name));
+      res = await this.jenkinsRequest(this.jenkinsJob.enable(job));
       res.code = 1;
     } catch(e) {
       res = {
@@ -46,10 +47,10 @@ class JenkinsJobService extends Service {
     }
     return res;
   }
-  async create(name) {
+  async disable({job}) {
     let res
     try {
-      res = await this.jenkinsRequest(this.jenkinsJob.crete(name));
+      res = await this.jenkinsRequest(this.jenkinsJob.disable(job));
       res.code = 1;
     } catch(e) {
       res = {
@@ -59,7 +60,21 @@ class JenkinsJobService extends Service {
     }
     return res;
   }
-  async delete(name) {
+  // Todo: 待确定参数
+  async create({name}) {
+    let res
+    try {
+      res = await this.jenkinsRequest(this.jenkinsJob.crete(name, {}));
+      res.code = 1;
+    } catch(e) {
+      res = {
+        statusCode: e,
+        code: 0
+      }
+    }
+    return res;
+  }
+  async destroy(name) {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.delete(name));
@@ -85,6 +100,7 @@ class JenkinsJobService extends Service {
     }
     return res;
   }
+  // Todo： 底层模块尚未完成
   async updateConfig(name, data) {
     let res
     try {

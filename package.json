@@ -21,8 +21,9 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "egg": "^2.26.0",
+    "egg-cors": "^2.2.3",
     "egg-validate": "^2.0.2",
-    "jenkins-node-api": "^0.1.1",
+    "jenkins-node-api": "^0.2.1",
     "mysql": "^2.18.1",
     "redis": "^3.0.2"
   },

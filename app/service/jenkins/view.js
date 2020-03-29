@@ -7,10 +7,11 @@ class JenkinsViewService extends Service {
     this.jenkinsView = jenkins.viewAPI;
     this.jenkinsRequest = jenkins.request.bind(this.app.jenkins);
   }
-  async show(id) {
+  async index() {
     let res
     try {
-      res = await this.jenkinsRequest(this.jenkinsView.getInfo(id));
+      res = await this.jenkinsRequest(this.app.jenkins.list());
+      res = res.views;
       res.code = 1;
     } catch(e) {
       res = {
@@ -20,10 +21,10 @@ class JenkinsViewService extends Service {
     }
     return res;
   }
-  async create(name) {
+  async show(name) {
     let res
     try {
-      res = await this.jenkinsRequest(this.jenkinsView.crete(name));
+      res = await this.jenkinsRequest(this.jenkinsView.getInfo(name));
       res.code = 1;
     } catch(e) {
       res = {
@@ -33,7 +34,23 @@ class JenkinsViewService extends Service {
     }
     return res;
   }
-  async delete(name) {
+  async create(data) {
+    let res
+    try {
+      res = await this.jenkinsRequest(this.jenkinsView.create(data));
+      if (res.statusCode === 200) {
+        res.message = 201;
+      }
+      res.code = 1;
+    } catch(e) {
+      res = {
+        statusCode: e,
+        code: 0
+      }
+    }
+    return res;
+  }
+  async destroy(name) {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsView.delete(name));
@@ -59,7 +76,8 @@ class JenkinsViewService extends Service {
     }
     return res;
   }
-  async update(name, data) {
+   // Todo： 底层模块尚未完成
+  async updateConfig(name, data) {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsView.updateConfig(name, data));
@@ -72,7 +90,6 @@ class JenkinsViewService extends Service {
     }
     return res;
   }
-  async ['new']() {}
 }
 
 module.exports = JenkinsViewService;

@@ -8,9 +8,9 @@ class JenkinsBuildController extends Controller {
     let res = await ctx.service.jenkins.build.getInfo(id);
     this.ctx.body = res;
     if (res.code) {
-      this.status = res.statusCode;
+      ctx.status = res.statusCode;
     } else {
-      this.status = 200;
+      ctx.status = 200;
     }
   }
   async build() {
@@ -20,9 +20,9 @@ class JenkinsBuildController extends Controller {
     let res = await ctx.service.jenkins.build.build();
     this.ctx.body = res;
     if (res.code) {
-      this.status = res.statusCode;
+      ctx.status = res.statusCode;
     } else {
-      this.status = 200;
+      ctx.status = 200;
     }
   }
   async stop() {
@@ -32,9 +32,9 @@ class JenkinsBuildController extends Controller {
     let res = await ctx.service.jenkins.job.stop(id);
     this.ctx.body = res;
     if (res.code) {
-      this.status = res.statusCode;
+      ctx.status = res.statusCode;
     } else {
-      this.status = 200;
+      ctx.status = 200;
     }
   }
   async delete() {
@@ -44,9 +44,9 @@ class JenkinsBuildController extends Controller {
     let res = await ctx.service.jenkins.build.delete(id);
     this.ctx.body = res;
     if (res.code) {
-      this.status = res.statusCode;
+      ctx.status = res.statusCode;
     } else {
-      this.status = 200;
+      ctx.status = 200;
     }
   }
   async last() {
@@ -56,9 +56,9 @@ class JenkinsBuildController extends Controller {
     let res = await ctx.service.jenkins.build.last();
     this.ctx.body = res;
     if (res.code) {
-      this.status = res.statusCode;
+      ctx.status = res.statusCode;
     } else {
-      this.status = 200;
+      ctx.status = 200;
     }
   }
 }
