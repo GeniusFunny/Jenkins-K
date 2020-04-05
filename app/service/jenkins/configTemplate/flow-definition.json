@@ -1,0 +1,85 @@
+{
+  "flow-definition": {
+      "$": {
+          "plugin": "workflow-job@2.38"
+      },
+      "actions": {
+          "org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction": {
+              "$": {
+                  "plugin": "pipeline-model-definition@1.6.0"
+              }
+          },
+          "org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction": {
+              "$": {
+                  "plugin": "pipeline-model-definition@1.6.0"
+              },
+              "jobProperties": "",
+              "triggers": "",
+              "parameters": "",
+              "options": ""
+          }
+      },
+      "description": "测试Jenkins CI/CD 流水线",
+      "keepDependencies": "false",
+      "properties": {
+          "hudson.plugins.jira.JiraProjectProperty": {
+              "$": {
+                  "plugin": "jira@3.0.14"
+              }
+          },
+          "com.coravy.hudson.plugins.github.GithubProjectProperty": {
+              "$": {
+                  "plugin": "github@1.29.5"
+              },
+              "projectUrl": "https://github.com/GeniusFunny/jenkins-test/",
+              "displayName": ""
+          },
+          "com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty": {
+              "$": {
+                  "plugin": "gitlab-plugin@1.5.13"
+              },
+              "gitLabConnection": ""
+          },
+          "org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty": "",
+          "org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty": {
+              "triggers": ""
+          }
+      },
+      "definition": {
+          "$": {
+              "class": "org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition",
+              "plugin": "workflow-cps@2.80"
+          },
+          "scm": {
+              "$": {
+                  "class": "hudson.plugins.git.GitSCM",
+                  "plugin": "git@4.2.2"
+              },
+              "configVersion": "2",
+              "userRemoteConfigs": {
+                  "hudson.plugins.git.UserRemoteConfig": {
+                      "url": "git@github.com:GeniusFunny/jenkins-test.git",
+                      "credentialsId": "0570c7b4-9076-41cf-b463-195c19508c63"
+                  }
+              },
+              "branches": {
+                  "hudson.plugins.git.BranchSpec": {
+                      "name": "*/master"
+                  }
+              },
+              "doGenerateSubmoduleConfigurations": "false",
+              "submoduleCfg": {
+                  "$": {
+                      "class": "list"
+                  }
+              },
+              "extensions": ""
+          },
+          "scriptPath": "Jenkinsfile",
+          "lightweight": "true"
+      },
+      "triggers": "",
+      "disabled": "false"
+  },
+  "code": 1
+}

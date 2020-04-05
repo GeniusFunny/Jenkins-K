@@ -1,0 +1,178 @@
+{
+  "project": {
+    "actions": "",
+    "description": "",
+    "keepDependencies": "false",
+    "properties": {
+      "hudson.plugins.jira.JiraProjectProperty": {
+        "$": {
+          "plugin": "jira@3.0.14"
+        }
+      },
+      "com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty": {
+        "$": {
+          "plugin": "gitlab-plugin@1.5.13"
+        },
+        "gitLabConnection": ""
+      }
+    },
+    "scm": {
+      "$": {
+        "class": "hudson.plugins.git.GitSCM",
+        "plugin": "git@4.2.2"
+      },
+      "configVersion": "2",
+      "userRemoteConfigs": {
+        "hudson.plugins.git.UserRemoteConfig": {
+          "url": "",
+          "credentialsId": ""
+        }
+      },
+      "branches": {
+        "hudson.plugins.git.BranchSpec": {
+          "name": "*/master"
+        }
+      },
+      "doGenerateSubmoduleConfigurations": "false",
+      "submoduleCfg": {
+        "$": {
+          "class": "list"
+        }
+      },
+      "extensions": ""
+    },
+    "canRoam": "true",
+    "disabled": "false",
+    "blockBuildWhenDownstreamBuilding": "false",
+    "blockBuildWhenUpstreamBuilding": "false",
+    "triggers": {
+      "org.jenkinsci.plugins.gwt.GenericTrigger": {
+        "$": {
+          "plugin": "generic-webhook-trigger@1.67"
+        },
+        "spec": "",
+        "genericVariables": {
+          "org.jenkinsci.plugins.gwt.GenericVariable": {
+            "expressionType": "JSONPath",
+            "key": "ref",
+            "value": "$.ref",
+            "regexpFilter": "",
+            "defaultValue": ""
+          }
+        },
+        "regexpFilterText": "$ref",
+        "regexpFilterExpression": "^(refs/heads/master)$",
+        "printPostContent": "false",
+        "printContributedVariables": "false",
+        "causeString": "Generic Cause",
+        "token": "",
+        "silentResponse": "false",
+        "overrideQuietPeriod": "false"
+      }
+    },
+    "concurrentBuild": "false",
+    "builders": {
+      "hudson.tasks.Shell": {
+        "command": ""
+      }
+    },
+    "publishers": {
+      "hudson.plugins.emailext.ExtendedEmailPublisher": {
+        "$": {
+          "plugin": "email-ext@2.69"
+        },
+        "recipientList": "",
+        "configuredTriggers": {
+          "hudson.plugins.emailext.plugins.trigger.AlwaysTrigger": {
+            "email": {
+              "recipientList": "",
+              "subject": "$PROJECT_DEFAULT_SUBJECT",
+              "body": "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>${PROJECT_NAME}-第${BUILD_NUMBER}次构建日志</title>\n</head>\n \n<body leftmargin=\"8\" marginwidth=\"0\" topmargin=\"8\" marginheight=\"4\"\n    offset=\"0\">\n    <table width=\"95%\" cellpadding=\"0\" cellspacing=\"0\"\n        style=\"font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif\">\n        <tr>\n            <td>(本邮件是程序自动下发的，请勿回复！)</td>\n        </tr>\n        <tr>\n            <td><h2>\n                    <font color=\"#0000FF\">构建结果 - ${BUILD_STATUS}</font>\n                </h2></td>\n        </tr>\n        <tr>\n            <td><br />\n            <b><font color=\"#0B610B\">构建信息</font></b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td>\n                <ul>\n                    <li>项目名称 ： ${PROJECT_NAME}</li>\n                    <li>构建编号 ： 第${BUILD_NUMBER}次构建</li>\n                    <li>触发原因： ${CAUSE}</li>\n                    <li>构建日志： <a href=\"${BUILD_URL}console\">${BUILD_URL}console</a></li>\n                    <li>构建  Url ： <a href=\"${BUILD_URL}\">${BUILD_URL}</a></li>\n                    <li>工作目录 ： <a href=\"${PROJECT_URL}ws\">${PROJECT_URL}ws</a></li>\n                    <li>项目  Url ： <a href=\"${PROJECT_URL}\">${PROJECT_URL}</a></li>\n                </ul>\n            </td>\n        </tr>\n        <tr>\n            <td><b><font color=\"#0B610B\">Changes Since Last\n                        Successful Build:</font></b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td>\n                <ul>\n                    <li>历史变更记录 : <a href=\"${PROJECT_URL}changes\">${PROJECT_URL}changes</a></li>\n                </ul> ${CHANGES_SINCE_LAST_SUCCESS,reverse=true, format=\"Changes for Build #%n:<br />%c<br />\",showPaths=true,changesFormat=\"<pre>[%a]<br />%m</pre>\",pathFormat=\"    %p\"}\n            </td>\n        </tr>\n        <tr>\n            <td><b>Test Informations</b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td><pre\n                    style=\"font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif\">Total:${TEST_COUNTS,var=\"total\"},Pass:${TEST_COUNTS,var=\"pass\"},Failed:${TEST_COUNTS,var=\"fail\"},Skiped:${TEST_COUNTS,var=\"skip\"}</pre>\n                <br /></td>\n        </tr>\n        <tr>\n            <td><b><font color=\"#0B610B\">构建日志 (最后 100行):</font></b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td><textarea cols=\"80\" rows=\"30\" readonly=\"readonly\"\n                    style=\"font-family: Courier New\">${BUILD_LOG, maxLines=100}</textarea>\n            </td>\n        </tr>\n    </table>\n</body>\n</html>",
+              "recipientProviders": {
+                "hudson.plugins.emailext.plugins.recipients.ListRecipientProvider": ""
+              },
+              "attachmentsPattern": "",
+              "attachBuildLog": "true",
+              "compressBuildLog": "false",
+              "replyTo": "$PROJECT_DEFAULT_REPLYTO",
+              "contentType": "project"
+            }
+          }
+        },
+        "contentType": "text/html",
+        "defaultSubject": "$DEFAULT_SUBJECT",
+        "defaultContent": "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>${PROJECT_NAME}-第${BUILD_NUMBER}次构建日志</title>\n</head>\n \n<body leftmargin=\"8\" marginwidth=\"0\" topmargin=\"8\" marginheight=\"4\"\n    offset=\"0\">\n    <table width=\"95%\" cellpadding=\"0\" cellspacing=\"0\"\n        style=\"font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif\">\n        <tr>\n            <td>(本邮件是程序自动下发的，请勿回复！)</td>\n        </tr>\n        <tr>\n            <td><h2>\n                    <font color=\"#0000FF\">构建结果 - ${BUILD_STATUS}</font>\n                </h2></td>\n        </tr>\n        <tr>\n            <td><br />\n            <b><font color=\"#0B610B\">构建信息</font></b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td>\n                <ul>\n                    <li>项目名称 ： ${PROJECT_NAME}</li>\n                    <li>构建编号 ： 第${BUILD_NUMBER}次构建</li>\n                    <li>触发原因： ${CAUSE}</li>\n                    <li>构建日志： <a href=\"${BUILD_URL}console\">${BUILD_URL}console</a></li>\n                    <li>构建  Url ： <a href=\"${BUILD_URL}\">${BUILD_URL}</a></li>\n                    <li>工作目录 ： <a href=\"${PROJECT_URL}ws\">${PROJECT_URL}ws</a></li>\n                    <li>项目  Url ： <a href=\"${PROJECT_URL}\">${PROJECT_URL}</a></li>\n                </ul>\n            </td>\n        </tr>\n        <tr>\n            <td><b><font color=\"#0B610B\">Changes Since Last\n                        Successful Build:</font></b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td>\n                <ul>\n                    <li>历史变更记录 : <a href=\"${PROJECT_URL}changes\">${PROJECT_URL}changes</a></li>\n                </ul> ${CHANGES_SINCE_LAST_SUCCESS,reverse=true, format=\"Changes for Build #%n:<br />%c<br />\",showPaths=true,changesFormat=\"<pre>[%a]<br />%m</pre>\",pathFormat=\"    %p\"}\n            </td>\n        </tr>\n        <tr>\n            <td><b>Test Informations</b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td><pre\n                    style=\"font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif\">Total:${TEST_COUNTS,var=\"total\"},Pass:${TEST_COUNTS,var=\"pass\"},Failed:${TEST_COUNTS,var=\"fail\"},Skiped:${TEST_COUNTS,var=\"skip\"}</pre>\n                <br /></td>\n        </tr>\n        <tr>\n            <td><b><font color=\"#0B610B\">构建日志 (最后 100行):</font></b>\n            <hr size=\"2\" width=\"100%\" align=\"center\" /></td>\n        </tr>\n        <tr>\n            <td><textarea cols=\"80\" rows=\"30\" readonly=\"readonly\"\n                    style=\"font-family: Courier New\">${BUILD_LOG, maxLines=100}</textarea>\n            </td>\n        </tr>\n    </table>\n</body>\n</html>",
+        "attachmentsPattern": "",
+        "presendScript": "$DEFAULT_PRESEND_SCRIPT",
+        "postsendScript": "$DEFAULT_POSTSEND_SCRIPT",
+        "attachBuildLog": "true",
+        "compressBuildLog": "false",
+        "replyTo": "",
+        "from": "",
+        "saveOutput": "false",
+        "disabled": "false"
+      },
+      "jenkins.plugins.publish__over__ssh.BapSshPublisherPlugin": {
+        "$": {
+          "plugin": "publish-over-ssh@1.20.1"
+        },
+        "consolePrefix": "SSH: ",
+        "delegate": {
+          "$": {
+            "plugin": "publish-over@0.22"
+          },
+          "publishers": {
+            "jenkins.plugins.publish__over__ssh.BapSshPublisher": {
+              "$": {
+                "plugin": "publish-over-ssh@1.20.1"
+              },
+              "configName": "",
+              "verbose": "false",
+              "transfers": {
+                "jenkins.plugins.publish__over__ssh.BapSshTransfer": {
+                  "remoteDirectory": "",
+                  "sourceFiles": "",
+                  "excludes": "",
+                  "removePrefix": "",
+                  "remoteDirectorySDF": "false",
+                  "flatten": "false",
+                  "cleanRemote": "false",
+                  "noDefaultExcludes": "false",
+                  "makeEmptyDirs": "false",
+                  "patternSeparator": "[, ]+",
+                  "execCommand": "",
+                  "execTimeout": "120000",
+                  "usePty": "false",
+                  "useAgentForwarding": "false"
+                }
+              },
+              "useWorkspaceInPromotion": "false",
+              "usePromotionTimestamp": "false"
+            }
+          },
+          "continueOnError": "false",
+          "failOnError": "false",
+          "alwaysPublishFromMaster": "false",
+          "hostConfigurationAccess": {
+            "$": {
+              "class": "jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin",
+              "reference": "../.."
+            }
+          }
+        }
+      }
+    },
+    "buildWrappers": {
+      "org.jenkinsci.plugins.nvm.NvmWrapper": {
+        "$": {
+          "plugin": "nvm-wrapper@0.1.7"
+        },
+        "version": "v10.16.3",
+        "nvmInstallURL": "https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh",
+        "nvmNodeJsOrgMirror": "https://nodejs.org/dist",
+        "nvmIoJsOrgMirror": "https://iojs.org/dist",
+        "nvmInstallDir": "$HOME/.nvm"
+      }
+    }
+  }
+}

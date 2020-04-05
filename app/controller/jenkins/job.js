@@ -140,24 +140,33 @@ class JenkinsJobController extends Controller {
     
     if (res.code) {
       ctx.status = 200;
+      delete res.code
     } else {
       ctx.status = res.statusCode;
     }
   }
-
-  // Todo： 底层模块尚未完成
   async updateConfig() {
     const { ctx } = this;
     const query = ctx.query;
     const job = query.job;
-    let res = await ctx.service.jenkins.job.updateConfig(job);
-    this.ctx.body = res;
-
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const updateRule = {}
+    try {
+      ctx.validate(updateRule);
+      const req = ctx.request.body;
+      let res = await ctx.service.jenkins.job.updateConfig(job, req);
+      this.ctx.body = res;
+      if (res.code) {
+        ctx.status = 200;
+      } else {
+        ctx.status = res.statusCode;
+      }
+    } catch(err) {
+      ctx.logger.warn(err.errors);
+      ctx.body = {
+        success: false,
+        message: '参数不合法'
+      };
+    } 
   }
 }
 

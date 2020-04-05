@@ -35,26 +35,22 @@ class JenkinsViewController extends Controller {
       let res = await ctx.service.jenkins.view.create(req);
       if (res.code) {
         if (res.message === 201) {
-          ctx.body = {
-            message: 'created'
-          }
           ctx.status = 201;
         } else {
-          ctx.status = 400;
           ctx.body = {
-            message: `view ${req.name} is existed`
+            message: `view ${req.name} is existed`,
           }
+          ctx.status = 500;
         }
       }
     } catch(err) {
       ctx.logger.warn(err.errors);
+      ctx.status = 500;
       ctx.body = {
-        success: false,
         message: '参数不合法'
       };
     }
   }
-
   async destroy() {
     const { ctx } = this;
     const id = ctx.params.id;
@@ -79,19 +75,28 @@ class JenkinsViewController extends Controller {
       ctx.status = res.statusCode;
     }
   }
-  // Todo： 底层模块尚未完成
   async updateConfig() {
-    // Todo: 待更改
     const { ctx } = this;
     const query = ctx.query;
     const view = query.view;
-    let res = await ctx.service.jenkins.view.updateConfig(view);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const updateRule = {}
+    try {
+      ctx.validate(updateRule);
+      const req = ctx.request.body;
+      let res = await ctx.service.jenkins.view.updateConfig(view, req);
+      this.ctx.body = res;
+      if (res.code) {
+        ctx.status = 200;
+      } else {
+        ctx.status = res.statusCode;
+      }
+    } catch(err) {
+      ctx.logger.warn(err.errors);
+      ctx.body = {
+        success: false,
+        message: '参数不合法'
+      };
+    } 
   }
 }
 

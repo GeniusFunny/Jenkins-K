@@ -11,7 +11,12 @@ class JenkinsJobService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.app.jenkins.list());
-      res = res.jobs;
+      let jobs = res.jobs.map(item => item.name);
+      const data = []
+      for(const job of jobs) {
+        data.push(await this.show(job))
+      }
+      res = data
       res.code = 1;
     } catch(e) {
       res = {
@@ -100,7 +105,6 @@ class JenkinsJobService extends Service {
     }
     return res;
   }
-  // Todo： 底层模块尚未完成
   async updateConfig(name, data) {
     let res
     try {

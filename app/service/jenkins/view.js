@@ -11,7 +11,12 @@ class JenkinsViewService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.app.jenkins.list());
-      res = res.views;
+      let views = res.views.map(item => item.name);
+      const data = []
+      for(const view of views) {
+        data.push(await this.show(view))
+      }
+      res = data
       res.code = 1;
     } catch(e) {
       res = {
@@ -76,7 +81,6 @@ class JenkinsViewService extends Service {
     }
     return res;
   }
-   // Todo： 底层模块尚未完成
   async updateConfig(name, data) {
     let res
     try {
