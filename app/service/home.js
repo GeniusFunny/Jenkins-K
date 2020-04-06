@@ -1,7 +1,9 @@
 const Service = require('egg').Service;
 
 class HomeService extends Service {
-  async idnex() {}
+  async index() {
+    
+  }
 }
 
 module.exports = HomeService;
