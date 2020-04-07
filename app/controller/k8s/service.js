@@ -1,11 +1,11 @@
 const Controller = require('egg').Controller;
 
-class K8sPodController extends Controller {
+class K8sServiceController extends Controller {
   async index() {
     const { ctx } = this;
     const query = ctx.query;
     const namespace = query.namespace || 'default';
-    const res = await ctx.service.k8s.pod.index(namespace);
+    const res = await ctx.service.k8s.service.index(namespace);
     ctx.body = res;
     ctx.status = res.statusCode;
   }
@@ -13,8 +13,8 @@ class K8sPodController extends Controller {
     const { ctx } = this;
     const query = ctx.query;
     const namespace = query.namespace || 'default';
-    const pod = ctx.params.id;
-    const res = await ctx.service.k8s.pod.show(namespace, pod);
+    const service = ctx.params.id;
+    const res = await ctx.service.k8s.service.show(namespace, service);
     ctx.body = res;
     ctx.status = res.statusCode;
   }
@@ -22,8 +22,7 @@ class K8sPodController extends Controller {
     const { ctx } = this;
     try {
       const req = ctx.request.body;
-      const namespace = req.namespace || 'default';
-      const res = await ctx.service.k8s.pod.create(namespace, req);
+      const res = await ctx.service.k8s.service.create(req);
       ctx.body = res;
       ctx.status = res.statusCode;
     } catch (e) {
@@ -39,8 +38,8 @@ class K8sPodController extends Controller {
     try {
       const req = ctx.request.body;
       const namespace = req.namespace || 'default';
-      const pod = ctx.params.id;
-      const res = await ctx.service.k8s.pod.destroy(namespace, pod);
+      const service = ctx.params.id;
+      const res = await ctx.service.k8s.service.destroy(namespace, service);
       ctx.body = res;
       ctx.status = res.statusCode;
     } catch (e) {
@@ -54,17 +53,12 @@ class K8sPodController extends Controller {
   }
   async update() {
     const { ctx } = this;
-    const updateRule = {
-      spec: {
-        type: 'object'
-      }
-    }
+    const updateRule = {}
     try {
       ctx.validate(updateRule);
       const req = ctx.request.body;
-      const pod = ctx.params.id;
-      const namespace = req.namespace || 'default';
-      const res = await ctx.service.k8s.pod.update(namespace, pod, req);
+      const service = ctx.params.id;
+      const res = await ctx.service.k8s.service.update(service, req);
       ctx.body = res;
       ctx.status = res.statusCode;
     } catch (e) {
@@ -77,4 +71,4 @@ class K8sPodController extends Controller {
   }
 }
 
-module.exports = K8sPodController;
+module.exports = K8sServiceController;

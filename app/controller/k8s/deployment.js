@@ -4,128 +4,146 @@ class K8sDeployController extends Controller {
   async index() {
     const { ctx } = this;
     const query = ctx.query;
-    const namespace = query.namespace;
-    let res = await ctx.service.k8s.deployment.index(namespace);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const namespace = query.namespace || 'default';
+    const res = await ctx.service.k8s.deployment.index(namespace);
+    ctx.body = res;
+    ctx.status = res.statusCode;
   }
   async show() {
     const { ctx } = this;
     const query = ctx.query;
+    const namespace = query.namespace || 'default';
+    const deployment = ctx.params.id;
+    const res = await ctx.service.k8s.deployment.show(namespace, deployment);
+    ctx.body = res;
+    ctx.status = res.statusCode;
+  }
+  async watch() {
+    const { ctx } = this;
+    const query = ctx.query;
     const namespace = query.namespace;
     const deployment = query.deployment;
-    let res = await ctx.service.k8s.deployment.show(namespace, deployment);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const res = await ctx.service.k8s.deployment.watch(namespace, deployment);
+    ctx.body = res;
+    ctx.status = res.statusCode;
   }
   async create() {
     const { ctx } = this;
-    const createRule = {
-      metadata: {
-        name: {
-          type: 'string'
-        },
-        labels: {
-          type: 'object'
-        }
-      },
-      spec: {
-        containers: {
-          type: 'object'
-        }
-      }
-    }
+    // const createRule = {
+    //   metadata: {
+    //     name: {
+    //       type: 'string'
+    //     },
+    //     labels: {
+    //       type: 'object'
+    //     }
+    //   },
+    //   spec: {
+    //     containers: {
+    //       type: 'object'
+    //     }
+    //   }
+    // }
     try {
-      ctx.validate(createRule);
+      // ctx.validate(createRule);
       const req = ctx.request.body;
-      let res = await ctx.service.k8s.deployment.create(req);
-      if (res.code) {
-        if (res.message === 201) {
-          ctx.body = {
-            message: 'created'
-          }
-          ctx.status = 201;
-        } else {
-          ctx.status = 400;
-          ctx.body = {
-            message: `job ${req.name} is existed`
-          }
-        }
-      }
-    } catch (err) {
-      ctx.logger.warn(err.errors);
+      const res = await ctx.service.k8s.deployment.create(req);
+      ctx.body = res;
+      ctx.status = res.statusCode;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
       ctx.body = {
-        success: false,
+        ...e,
         message: '参数不合法'
       };
     }
   }
-  async delete() {
+  async destroy() {
     const { ctx } = this;
-    const query = ctx.query;
-    const namespace = query.namespace;
-    const deployment = query.deployment;
-    let res = await ctx.service.k8s.deployment.delete(namespace, deployment);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
+    try {
+      const req = ctx.request.body;
+      const namespace = req.namespace || 'default';
+      const deployment = ctx.params.id;
+      const res = await ctx.service.k8s.deployment.destroy(namespace, deployment);
+      ctx.body = res;
       ctx.status = res.statusCode;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
+      ctx.body = {
+        ...e,
+        message: '参数不合法'
+      };
     }
+
   }
   async rollback() {
     const { ctx } = this;
-    const query = ctx.query;
-    const namespace = query.namespace;
-    const deployment = query.deployment;
-    try {
-      let res = await ctx.service.k8s.deployment.rollback(namespace, deployment);
-      if (res.code) {
-        ctx.body = res
-        ctx.status = 200;
-      } else {
-        ctx.status = 400;
-        ctx.body = res;
+    const rollbackRule = {
+      deployment: {
+        type: 'string'
       }
-    } catch (err) {
-      ctx.logger.warn(err.errors);
+    }
+    try {
+      ctx.validate(rollbackRule);
+      const req = ctx.request.body;
+      const namespace = req.namespace || 'default';
+      const deployment = req.deployment;
+      const res = await ctx.service.k8s.deployment.rollback(namespace, deployment);
+      ctx.body = res;
+      ctx.status = res.statusCode;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
       ctx.body = {
-        success: false,
+        ...e,
         message: '参数不合法'
       };
     }
   }
-  async patch() {
+  async update() {
     const { ctx } = this;
-    const createRule = {}
-    try {
-      ctx.validate(createRule);
-      const req = ctx.request.body;
-      const query = ctx.query;
-      const namespace = query.namespace;
-      const deployment = query.deployment;
-      let res = await ctx.service.k8s.deployment.patch(namespace, deployment, req);
-      if (res.code) {
-        if (res.code) {
-          ctx.body = res
-          ctx.status = 200;
-        } else {
-          ctx.status = 400;
-          ctx.body = res;
-        }
+    const updateRule = {
+      spec: {
+        type: 'object'
       }
-    } catch (err) {
-      ctx.logger.warn(err.errors);
+    }
+    try {
+      ctx.validate(updateRule);
+      const req = ctx.request.body;
+      const deployment = ctx.params.id;
+      const res = await ctx.service.k8s.deployment.watchUpdate(deployment, req);
+      ctx.body = res;
+      ctx.status = res.statusCode;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
       ctx.body = {
-        success: false,
+        ...e,
+        message: '参数不合法'
+      };
+    }
+  }
+  async scale() {
+    const { ctx } = this;
+    const scaleRule = {
+      size: {
+        type: 'number'
+      },
+      deployment: {
+        type: 'string'
+      }
+    }
+    try {
+      ctx.validate(scaleRule);
+      const req = ctx.request.body;
+      const deployment = req.deployment;
+      const namespace = req.namespace || 'default';
+      const size = req.size || 3;
+      const res = await ctx.service.k8s.deployment.scale(namespace, deployment, size);
+      ctx.body = res;
+      ctx.status = res.statusCode;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
+      ctx.body = {
+        ...e,
         message: '参数不合法'
       };
     }
