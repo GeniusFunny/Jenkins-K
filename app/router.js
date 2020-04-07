@@ -16,9 +16,16 @@ module.exports = app => {
   router.resources('job', `${jenkinsPath}/jobs`, controller.jenkins.job);
   router.get(`${jenkinsPath}/jobConfig`, controller.jenkins.job.getConfig);
   router.put(`${jenkinsPath}/jobConfig`, controller.jenkins.job.updateConfig);
-
   router.post(`${jenkinsPath}/job/enable`, controller.jenkins.job.enable);
   router.post(`${jenkinsPath}/job/disable`, controller.jenkins.job.disable);
+
+  router.get(`${jenkinsPath}/build/info`, controller.jenkins.build.getInfo);
+  router.get(`${jenkinsPath}/build/last`, controller.jenkins.build.last);
+  router.get(`${jenkinsPath}/build/lastSuccessfulBuild`, controller.jenkins.build.lastSuccessfulBuild);
+  router.post(`${jenkinsPath}/build/start`, controller.jenkins.build.start);
+  router.delete(`${jenkinsPath}/build/delete`, controller.jenkins.build.delete);
+  router.post(`${jenkinsPath}/build/stop`, controller.jenkins.build.stop);
+
 
   /*
     Kubernetes API：

@@ -3,49 +3,33 @@ const Controller = require('egg').Controller;
 class JenkinsViewController extends Controller {
   async index() {
     const { ctx } = this;
-    let res = await ctx.service.jenkins.view.index();
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const res = await ctx.service.jenkins.view.index();
+    ctx.body = res;
+    ctx.status = res.status;
   }
   async show() {
     const { ctx } = this;
     const id = ctx.params.id;
-    let res = await ctx.service.jenkins.view.show(id);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const res = await ctx.service.jenkins.view.show(id);
+    ctx.body = res;
+    ctx.status = res.status;
   }
   async create() {
     const { ctx } = this;
-    const createRule = {
+    const rule = {
       name: {
         type: 'string',
       }
     }
     try {
-      ctx.validate(createRule);
+      ctx.validate(rule);
       const req = ctx.request.body;
-      let res = await ctx.service.jenkins.view.create(req);
-      if (res.code) {
-        if (res.message === 201) {
-          ctx.status = 201;
-        } else {
-          ctx.body = {
-            message: `view ${req.name} is existed`,
-          }
-          ctx.status = 500;
-        }
-      }
-    } catch(err) {
-      ctx.logger.warn(err.errors);
-      ctx.status = 500;
+      const res = await ctx.service.jenkins.view.create(req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch(e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
       ctx.body = {
         message: '参数不合法'
       };
@@ -54,26 +38,17 @@ class JenkinsViewController extends Controller {
   async destroy() {
     const { ctx } = this;
     const id = ctx.params.id;
-    let res = await ctx.service.jenkins.view.destroy(id);
-    this.ctx.body = res;
-    if (res.status === 'failed' || !res.code) {
-      ctx.status = res.message;
-    } else {
-      ctx.status = 200;
-    }
+    const res = await ctx.service.jenkins.view.destroy(id);
+    ctx.body = res;
+    ctx.status = res.status;
   }
   async getConfig() {
     const { ctx } = this;
     const query = ctx.query;
     const view = query.view;
-    let res = await ctx.service.jenkins.view.getConfig(view);
-    this.ctx.body = res;
-
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const res = await ctx.service.jenkins.view.getConfig(view);
+    ctx.body = res;
+    ctx.status = res.status;
   }
   async updateConfig() {
     const { ctx } = this;
@@ -83,17 +58,13 @@ class JenkinsViewController extends Controller {
     try {
       ctx.validate(updateRule);
       const req = ctx.request.body;
-      let res = await ctx.service.jenkins.view.updateConfig(view, req);
-      this.ctx.body = res;
-      if (res.code) {
-        ctx.status = 200;
-      } else {
-        ctx.status = res.statusCode;
-      }
-    } catch(err) {
-      ctx.logger.warn(err.errors);
+      const res = await ctx.service.jenkins.view.updateConfig(view, req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch(e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
       ctx.body = {
-        success: false,
         message: '参数不合法'
       };
     } 

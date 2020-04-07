@@ -4,62 +4,85 @@ class JenkinsBuildController extends Controller {
   async getInfo() {
     const { ctx } = this;
     const query = ctx.query;
-    const id = query.id;
-    let res = await ctx.service.jenkins.build.getInfo(id);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = res.statusCode;
-    } else {
-      ctx.status = 200;
-    }
+    const res = await ctx.service.jenkins.build.getInfo(query);
+    ctx.body = res;
+    ctx.status = res.status;
   }
-  async build() {
+  async start() {
     const { ctx } = this;
-    const query = ctx.query;
-    const name = query.name;
-    let res = await ctx.service.jenkins.build.build();
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = res.statusCode;
-    } else {
-      ctx.status = 200;
+    const rule = {
+      view: { type: 'string' },
+      job: { type: 'string' }
+    }
+    try {
+      ctx.validate(rule);
+      const req = ctx.request.body;
+      const res = await ctx.service.jenkins.build.start(req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
+      ctx.body = {
+        message: '参数不合法'
+      };
     }
   }
   async stop() {
     const { ctx } = this;
-    const query = ctx.query;
-    const id = query.id;
-    let res = await ctx.service.jenkins.job.stop(id);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = res.statusCode;
-    } else {
-      ctx.status = 200;
+    const rule = {
+      view: { type: 'string' },
+      job: { type: 'string' },
+      id: { type: 'number' }
+    }
+    try {
+      ctx.validate(rule);
+      const req = ctx.request.body;
+      const res = await ctx.service.jenkins.build.stop(req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
+      ctx.body = {
+        message: '参数不合法'
+      };
     }
   }
   async delete() {
     const { ctx } = this;
-    const query = ctx.query;
-    const id = query.id;
-    let res = await ctx.service.jenkins.build.delete(id);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = res.statusCode;
-    } else {
-      ctx.status = 200;
+    const rule = {
+      view: { type: 'string' },
+      job: { type: 'string' },
+      id: { type: 'number' }
+    }
+    try {
+      ctx.validate(rule);
+      const req = ctx.request.body;
+      const res = await ctx.service.jenkins.build.delete(req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch (e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
+      ctx.body = {
+        message: '参数不合法'
+      };
     }
   }
   async last() {
     const { ctx } = this;
     const query = ctx.query;
-    const name = query.name;
-    let res = await ctx.service.jenkins.build.last();
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = res.statusCode;
-    } else {
-      ctx.status = 200;
-    }
+    const res = await ctx.service.jenkins.build.last(query);
+    ctx.body = res;
+    ctx.status = res.status;
+  }
+  async lastSuccessfulBuild() {
+    const { ctx } = this;
+    const query = ctx.query;
+    const res = await ctx.service.jenkins.build.lastSuccessfulBuild(query);
+    ctx.body = res;
+    ctx.status = res.status;
   }
 }
 module.exports = JenkinsBuildController;

@@ -11,17 +11,24 @@ class JenkinsJobService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.app.jenkins.list());
-      let jobs = res.jobs.map(item => item.name);
-      const data = []
-      for(const job of jobs) {
-        data.push(await this.show(job))
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        let names = res.jobs.map(item => item.name);
+        const jobs = []
+        for(const name of names) {
+          let jobItem = await this.show(name);
+          if (jobItem.status === 200) {
+            delete jobItem.status;
+            jobs.push(jobItem);
+          }
+        }
+        res = jobs
+        res.status = 200;
       }
-      res = data
-      res.code = 1;
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -30,11 +37,14 @@ class JenkinsJobService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.getInfo(id));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -43,38 +53,47 @@ class JenkinsJobService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.enable(job));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
   }
-  async disable({job}) {
+  async disable({ job }) {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.disable(job));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
   }
   // Todo: 待确定参数
-  async create({name}) {
+  async create({ name }) {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.crete(name, {}));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -83,11 +102,14 @@ class JenkinsJobService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.delete(name));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -96,11 +118,14 @@ class JenkinsJobService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.getConfig(name));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -109,11 +134,14 @@ class JenkinsJobService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsJob.updateConfig(name, data));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;

@@ -11,17 +11,24 @@ class JenkinsViewService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.app.jenkins.list());
-      let views = res.views.map(item => item.name);
-      const data = []
-      for(const view of views) {
-        data.push(await this.show(view))
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        let names = res.views.map(item => item.name);
+        const views = []
+        for(const name of names) {
+          let viewItem = await this.show(name);
+          if (viewItem.status === 200) {
+            delete viewItem.status;
+            views.push(viewItem);
+          }
+        }
+        res = views
+        res.status = 200;
       }
-      res = data
-      res.code = 1;
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -30,11 +37,14 @@ class JenkinsViewService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsView.getInfo(name));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -46,11 +56,14 @@ class JenkinsViewService extends Service {
       if (res.statusCode === 200) {
         res.message = 201;
       }
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -59,11 +72,14 @@ class JenkinsViewService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsView.delete(name));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -72,11 +88,14 @@ class JenkinsViewService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsView.getConfig(name));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;
@@ -85,11 +104,14 @@ class JenkinsViewService extends Service {
     let res
     try {
       res = await this.jenkinsRequest(this.jenkinsView.updateConfig(name, data));
-      res.code = 1;
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
     } catch(e) {
       res = {
-        statusCode: e,
-        code: 0
+        status: e
       }
     }
     return res;

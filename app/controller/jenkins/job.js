@@ -3,118 +3,76 @@ const Controller = require('egg').Controller;
 class JenkinsJobController extends Controller {
   async index() {
     const { ctx } = this;
-    let res = await ctx.service.jenkins.job.index();
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const res = await ctx.service.jenkins.job.index();
+    ctx.body = res;
+    ctx.status = res.status;
   }
   async show() {
     const { ctx } = this;
     const id = ctx.params.id;
-    let res = await ctx.service.jenkins.job.show(id);
-    this.ctx.body = res;
-    if (res.code) {
-      ctx.status = 200;
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const res = await ctx.service.jenkins.job.show(id);
+    ctx.body = res;
+    ctx.status = res.status;
   }
   async enable() {
     const { ctx } = this;
-    const createRule = {
+    const rule = {
       job: {
         type: 'string',
       }
     }
     try {
-      ctx.validate(createRule);
+      ctx.validate(rule);
       const req = ctx.request.body;
-      let res = await ctx.service.jenkins.job.enable(req);
-      if (res.code) {
-        if (res.statusCode === 200) {
-          ctx.body = {
-            message: 'enabled'
-          }
-          ctx.status = res.statusCode;
-        } else {
-          ctx.status = res.message || 400;
-          ctx.body = {
-            message: `failed`
-          };
-        }
-      }
-    } catch(err) {
-      ctx.logger.warn(err.errors);
+      const res = await ctx.service.jenkins.job.enable(req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch(e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
       ctx.body = {
-        success: false,
         message: '参数不合法'
       };
     }
   }
   async disable() {
     const { ctx } = this;
-    const createRule = {
+    const rule = {
       job: {
         type: 'string',
       }
     }
     try {
-      ctx.validate(createRule);
+      ctx.validate(rule);
       const req = ctx.request.body;
-      let res = await ctx.service.jenkins.job.disable(req);
-      if (res.code) {
-        if (res.statusCode === 200) {
-          ctx.body = {
-            message: 'disabled'
-          }
-          ctx.status = res.statusCode;
-        } else {
-          ctx.status = res.message || 400;
-          ctx.body = {
-            message: `failed`
-          }
-        }
-      }
-    } catch(err) {
-      ctx.logger.warn(err.errors);
+      const res = await ctx.service.jenkins.job.disable(req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch(e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
       ctx.body = {
-        success: false,
         message: '参数不合法'
       };
     }
   }
-
   async create() {
     const { ctx } = this;
-    const createRule = {
+    const rule = {
       name: {
         type: 'string',
       }
     }
     try {
-      ctx.validate(createRule);
+      ctx.validate(rule);
       const req = ctx.request.body;
-      let res = await ctx.service.jenkins.job.create(req);
-      if (res.code) {
-        if (res.message === 201) {
-          ctx.body = {
-            message: 'created'
-          }
-          ctx.status = 201;
-        } else {
-          ctx.status = 400;
-          ctx.body = {
-            message: `job ${req.name} is existed`
-          }
-        }
-      }
-    } catch(err) {
-      ctx.logger.warn(err.errors);
+      const res = await ctx.service.jenkins.job.create(req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch(e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
       ctx.body = {
-        success: false,
         message: '参数不合法'
       };
     }
@@ -122,28 +80,17 @@ class JenkinsJobController extends Controller {
   async destroy() {
     const { ctx } = this;
     const id = ctx.params.id;
-    let res = await ctx.service.jenkins.job.destroy(id);
-    this.ctx.body = res;
-    if (res.status === 'failed' || !res.code) {
-      ctx.status = res.message;
-    } else {
-      ctx.status = 200;
-    }
+    const res = await ctx.service.jenkins.job.destroy(id);
+    ctx.body = res;
+    ctx.status = res.status;
   }
-
   async getConfig() {
     const { ctx } = this;
     const query = ctx.query;
     const job = query.job;
-    let res = await ctx.service.jenkins.job.getConfig(job);
-    this.ctx.body = res;
-    
-    if (res.code) {
-      ctx.status = 200;
-      delete res.code
-    } else {
-      ctx.status = res.statusCode;
-    }
+    const res = await ctx.service.jenkins.job.getConfig(job);
+    ctx.body = res;
+    ctx.status = res.status;
   }
   async updateConfig() {
     const { ctx } = this;
@@ -153,17 +100,13 @@ class JenkinsJobController extends Controller {
     try {
       ctx.validate(updateRule);
       const req = ctx.request.body;
-      let res = await ctx.service.jenkins.job.updateConfig(job, req);
-      this.ctx.body = res;
-      if (res.code) {
-        ctx.status = 200;
-      } else {
-        ctx.status = res.statusCode;
-      }
-    } catch(err) {
-      ctx.logger.warn(err.errors);
+      const res = await ctx.service.jenkins.job.updateConfig(job, req);
+      ctx.body = res;
+      ctx.status = res.status;
+    } catch(e) {
+      ctx.logger.warn(e.errors);
+      ctx.status = 400;
       ctx.body = {
-        success: false,
         message: '参数不合法'
       };
     } 
