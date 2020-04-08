@@ -5,7 +5,7 @@ class K8sNamespaceController extends Controller {
     const { ctx } = this;
     const res = await ctx.service.k8s.namespace.index();
     ctx.body = res;
-    ctx.status = res.statusCode;
+    ctx.status = res.statusCode || res.status;
   }
   async show() {
     const { ctx } = this;
@@ -13,7 +13,7 @@ class K8sNamespaceController extends Controller {
     const namespace = query.namespace || 'default';
     const res = await ctx.service.k8s.namespace.show(namespace);
     ctx.body = res;
-    ctx.status = res.statusCode;
+    ctx.status = res.statusCode || res.status;
   }
   async create() {
     const { ctx } = this;
@@ -21,7 +21,7 @@ class K8sNamespaceController extends Controller {
       const req = ctx.request.body;
       const res = await ctx.service.k8s.namespace.create(req);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {
@@ -36,7 +36,7 @@ class K8sNamespaceController extends Controller {
       const namespace = ctx.params.id;
       const res = await ctx.service.k8s.pod.destroy(namespace);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {
@@ -55,7 +55,7 @@ class K8sNamespaceController extends Controller {
       const namespace = ctx.params.id;
       const res = await ctx.service.k8s.namespace.update(namespace, req);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {

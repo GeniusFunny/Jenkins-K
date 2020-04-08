@@ -7,7 +7,7 @@ class K8sDeployController extends Controller {
     const namespace = query.namespace || 'default';
     const res = await ctx.service.k8s.deployment.index(namespace);
     ctx.body = res;
-    ctx.status = res.statusCode;
+    ctx.status = res.statusCode || res.status;
   }
   async show() {
     const { ctx } = this;
@@ -16,7 +16,7 @@ class K8sDeployController extends Controller {
     const deployment = ctx.params.id;
     const res = await ctx.service.k8s.deployment.show(namespace, deployment);
     ctx.body = res;
-    ctx.status = res.statusCode;
+    ctx.status = res.statusCode || res.status;
   }
   async watch() {
     const { ctx } = this;
@@ -25,7 +25,7 @@ class K8sDeployController extends Controller {
     const deployment = query.deployment;
     const res = await ctx.service.k8s.deployment.watch(namespace, deployment);
     ctx.body = res;
-    ctx.status = res.statusCode;
+    ctx.status = res.statusCode || res.status;
   }
   async create() {
     const { ctx } = this;
@@ -49,7 +49,7 @@ class K8sDeployController extends Controller {
       const req = ctx.request.body;
       const res = await ctx.service.k8s.deployment.create(req);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {
@@ -66,7 +66,7 @@ class K8sDeployController extends Controller {
       const deployment = ctx.params.id;
       const res = await ctx.service.k8s.deployment.destroy(namespace, deployment);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {
@@ -90,7 +90,7 @@ class K8sDeployController extends Controller {
       const deployment = req.deployment;
       const res = await ctx.service.k8s.deployment.rollback(namespace, deployment);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {
@@ -112,7 +112,7 @@ class K8sDeployController extends Controller {
       const deployment = ctx.params.id;
       const res = await ctx.service.k8s.deployment.watchUpdate(deployment, req);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {
@@ -139,7 +139,7 @@ class K8sDeployController extends Controller {
       const size = req.size || 3;
       const res = await ctx.service.k8s.deployment.scale(namespace, deployment, size);
       ctx.body = res;
-      ctx.status = res.statusCode;
+      ctx.status = res.statusCode || res.status;
     } catch (e) {
       ctx.logger.warn(e.errors);
       ctx.body = {

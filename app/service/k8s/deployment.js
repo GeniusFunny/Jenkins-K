@@ -88,14 +88,18 @@ class K8sDeploymentService extends Service {
       const updateImage = await this.update(deployment, namespace, req);
       if (updateImage.statusCode === 200) {
         res = await this.watchLoop(namespace, deployment);
-        if (res.status === 200) return res;
+        if (res.status === 200) {
+          res.statusCode = res.status;
+          return res;
+        }
       } else {
         return {
-          status: updateImage.statusCode,
+          statusCode: updateImage.statusCode,
           message: '更新失败'
         }
       }
     } catch (e) {
+      console.log(e)
       res = e
     }
     return res;
