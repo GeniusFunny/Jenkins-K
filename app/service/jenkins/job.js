@@ -10,6 +10,7 @@ class JenkinsJobService extends Service {
     this.jenkinsRequest = jenkins.request.bind(this.app.jenkins);
   }
   static combineConfig(config, patchData) {
+    console.log(config, patchData)
     if (patchData.description) {
       config.project.description = patchData.description;
     }
@@ -23,8 +24,8 @@ class JenkinsJobService extends Service {
       config.project.triggers['org.jenkinsci.plugins.gwt.GenericTrigger'].token = patchData.webhookToken;
     }
     if (patchData.recipientList) {
-      config.project.publisher['hudson.plugins.emailext.ExtendedEmailPublisher'].recipientList = patchData.recipientList;
-      config.project.publisher['hudson.plugins.emailext.ExtendedEmailPublisher'].configuredTriggers = {
+      config.project.publishers['hudson.plugins.emailext.ExtendedEmailPublisher'].recipientList = patchData.recipientList;
+      config.project.publishers['hudson.plugins.emailext.ExtendedEmailPublisher'].configuredTriggers = {
         ['hudson.plugins.emailext.plugins.trigger.AlwaysTrigger']: {
           email: {
             recipientList: patchData.recipientList
@@ -32,8 +33,8 @@ class JenkinsJobService extends Service {
         }
       }
     }
-    if (patchData.builderCommand) {
-      config.project.builders['hudson.tasks.Shell'].command = patchData.builderCommand;
+    if (patchData.command) {
+      config.project.builders['hudson.tasks.Shell'].command = patchData.command;
     }
     return config;
   }
@@ -125,11 +126,13 @@ class JenkinsJobService extends Service {
           res = await this.jenkinsRequest(this.jenkinsJob.updateConfig(name, config));
           res.status = 201;
         } catch (e) {
+          console.log(e)
           await this.destroy(name);
           res.status = res.message;
         }
       }
     } catch (e) {
+      console.log(e)
       res = {
         status: e
       }

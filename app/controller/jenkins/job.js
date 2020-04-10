@@ -68,7 +68,7 @@ class JenkinsJobController extends Controller {
       const req = ctx.request.body;
       const res = await ctx.service.jenkins.job.create(req);
       ctx.body = res;
-      ctx.status = res.status;
+      ctx.status = res.status || statusCode;
     } catch(e) {
       ctx.logger.warn(e.errors);
       ctx.status = 400;
