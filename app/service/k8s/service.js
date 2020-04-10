@@ -27,9 +27,10 @@ class K8sServiceService extends Service {
     }
     return res
   }
-  async create(namespace, serviceInfo) {
+  async create(serviceInfo) {
     let res = {}
-    const service = K8sPodService.combineServiceConfig(serviceInfo);
+    const namespace = serviceInfo.namespace || 'default';
+    const service = K8sServiceService.combineServiceConfig(serviceInfo);
     try {
       res = await this.k8s.api.v1.namespaces(namespace).services.post({
         body: service
@@ -48,8 +49,9 @@ class K8sServiceService extends Service {
     }
     return res
   }
-  async update(namespace, service, req) {
+  async update(service, req) {
     let res = {}
+    const namespace = req.namespace || 'default';
     try {
       res = await this.k8s.api.v1.namespaces(namespace).service(service).patch({
         body: req

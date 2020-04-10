@@ -29,23 +29,7 @@ class K8sDeployController extends Controller {
   }
   async create() {
     const { ctx } = this;
-    // const createRule = {
-    //   metadata: {
-    //     name: {
-    //       type: 'string'
-    //     },
-    //     labels: {
-    //       type: 'object'
-    //     }
-    //   },
-    //   spec: {
-    //     containers: {
-    //       type: 'object'
-    //     }
-    //   }
-    // }
     try {
-      // ctx.validate(createRule);
       const req = ctx.request.body;
       const res = await ctx.service.k8s.deployment.create(req);
       ctx.body = res;

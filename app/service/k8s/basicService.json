@@ -1,3 +1,19 @@
 {
-  
+  "kind": "Service",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "demo3"
+  },
+  "spec": {
+    "type": "LoadBalancer",
+    "selector": {
+      "app": "demo"
+    },
+    "ports": [
+      {
+        "port": 80,
+        "targetPort": 8080
+      }
+    ]
+  }
 }

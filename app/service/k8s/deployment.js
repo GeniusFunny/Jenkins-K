@@ -99,7 +99,6 @@ class K8sDeploymentService extends Service {
         }
       }
     } catch (e) {
-      console.log(e)
       res = e
     }
     return res;
