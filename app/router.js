@@ -2,7 +2,6 @@ module.exports = app => {
   const { router, controller } = app;
   const jenkinsPath = '/api/jenkins';
   const k8sPath = '/api/k8s';
-  router.get('/', controller.home.index);
   /*
     Jenkins API：
     1. View

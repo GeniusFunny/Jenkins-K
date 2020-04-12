@@ -11,6 +11,7 @@ class K8sDeploymentService extends Service {
   }
   // deployment列表
   async index(namespace) {
+    this.app.runSchedule('update_deployment');
     let res = {}
     try {
       res = await this.k8s.apis.extensions.v1beta1.namespaces(namespace).deployments.get();

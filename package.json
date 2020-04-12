@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "egg-bin dev"
+    "dev": "egg-bin dev",
+    "test": "egg-bin test"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,8 @@
     "body-parser": "^1.19.0",
     "egg": "^2.26.0",
     "egg-cors": "^2.2.3",
+    "egg-mock": "^4.0.0",
+    "egg-mysql": "^3.0.0",
     "egg-validate": "^2.0.2",
     "jenkins-node-api": "^0.5.0",
     "json-stream": "^1.0.0",

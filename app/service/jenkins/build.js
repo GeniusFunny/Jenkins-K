@@ -115,6 +115,7 @@ class JenkinsBuildService extends Service {
     构建失败 ---> 通知前端
   */
   async watchBuild() {
+    
   }
 }
 

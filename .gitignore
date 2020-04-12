@@ -1,6 +1,7 @@
 /node_modules
 /.vscode
 /config/config.jenkins.js
+/config/config.mysql.js
 /logs
 /run
 .DS_Store
