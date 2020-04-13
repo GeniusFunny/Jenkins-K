@@ -26,7 +26,7 @@ module.exports = app => {
   router.post(`${jenkinsPath}/build/start`, controller.jenkins.build.start);
   router.delete(`${jenkinsPath}/build/delete`, controller.jenkins.build.delete);
   router.post(`${jenkinsPath}/build/stop`, controller.jenkins.build.stop);
-
+  router.get(`${jenkinsPath}/build/log`, controller.jenkins.build.log);
 
   /*
     Kubernetes API：

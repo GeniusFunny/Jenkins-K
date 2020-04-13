@@ -25,7 +25,7 @@
     "egg-mock": "^4.0.0",
     "egg-mysql": "^3.0.0",
     "egg-validate": "^2.0.2",
-    "jenkins-node-api": "^0.5.0",
+    "jenkins-node-api": "^0.5.1",
     "json-stream": "^1.0.0",
     "kubernetes-client": "^8.3.6",
     "mysql": "^2.18.1",

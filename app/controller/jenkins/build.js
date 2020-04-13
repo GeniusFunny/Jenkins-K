@@ -8,6 +8,13 @@ class JenkinsBuildController extends Controller {
     ctx.body = res;
     ctx.status = res.status;
   }
+  async log() {
+    const { ctx } = this;
+    const query = ctx.query;
+    const res = await ctx.service.jenkins.build.log(query);
+    ctx.body = res;
+    ctx.status = res.status;
+  }
   async start() {
     const { ctx } = this;
     const rule = {

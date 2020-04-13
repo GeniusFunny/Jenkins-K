@@ -109,6 +109,24 @@ class JenkinsBuildService extends Service {
     }
     return res;
   }
+  async log(query) {
+    let res
+    try {
+      const { view, job, id } = query;
+      res = await this.jenkinsRequest(this.jenkinsBuild.log(view, job, id));
+      if (res.status === 'failed') {
+        res.status = res.message;
+      } else {
+        res.status = 200;
+      }
+    } catch (e) {
+      res = {
+        statusCode: e,
+      }
+    }
+    return res;
+
+  }
   /* 
     Todo: 监听构建成功的事件
     构建成功 ---> 通知前端 ---> 部署测试环境 ---> 测试环境验证通过 ---> 部署生产环境
