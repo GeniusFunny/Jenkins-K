@@ -71,7 +71,6 @@ class K8sDeployController extends Controller {
       ctx.validate(rollbackRule);
       const req = ctx.request.body;
       const namespace = req.namespace || 'default';
-      const deployment = req.deployment;
       const res = await ctx.service.k8s.deployment.rollback(namespace, deployment);
       ctx.body = res;
       ctx.status = res.statusCode || res.status;
@@ -118,7 +117,6 @@ class K8sDeployController extends Controller {
     try {
       ctx.validate(scaleRule);
       const req = ctx.request.body;
-      const deployment = req.deployment;
       const namespace = req.namespace || 'default';
       const size = req.size || 3;
       const res = await ctx.service.k8s.deployment.scale(namespace, deployment, size);

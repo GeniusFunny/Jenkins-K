@@ -32,6 +32,16 @@ class K8sServiceService extends Service {
     const namespace = serviceInfo.namespace || 'default';
     const service = K8sServiceService.combineServiceConfig(serviceInfo);
     try {
+      const port = service.spec.ports[0].port;
+      // dev环境
+      service.metadata.name = service.metadata.name + '-dev';
+      service.spec.ports[0].port = Math.floor(Math.random() * 10000);
+      res = await this.k8s.api.v1.namespaces(namespace).services.post({
+        body: service
+      });
+      // prod环境
+      service.metadata.name = service.metadata.name + '-prod';
+      service.spec.ports[0].port = port;
       res = await this.k8s.api.v1.namespaces(namespace).services.post({
         body: service
       });

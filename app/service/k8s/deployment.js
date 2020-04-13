@@ -11,7 +11,6 @@ class K8sDeploymentService extends Service {
   }
   // deployment列表
   async index(namespace) {
-    this.app.runSchedule('update_deployment');
     let res = {}
     try {
       res = await this.k8s.apis.extensions.v1beta1.namespaces(namespace).deployments.get();
@@ -36,6 +35,14 @@ class K8sDeploymentService extends Service {
     let res = {}
     const deployment = K8sDeploymentService.combineDeploymentConfig(deploymentInfo);
     try {
+      // 创建dev
+      const deploymentName = deployment.metadata.name;
+      deployment.metadata.name = deploymentName + '-dev'
+      res = await this.k8s.apis.extensions.v1beta1.namespaces(namespace).deployments.post({
+        body: deployment
+      });
+      // 创建prod
+      deployment.metadata.name = deploymentName + '-prod'
       res = await this.k8s.apis.extensions.v1beta1.namespaces(namespace).deployments.post({
         body: deployment
       });
@@ -48,6 +55,7 @@ class K8sDeploymentService extends Service {
   async destroy(namespace, deployment) {
     let res = {}
     try {
+      await this.ctx.service.k8s.service.destroy(namespace, deployment);
       res = await this.k8s.apis.extensions.v1beta1.namespaces(namespace).deployments(deployment).delete();
     } catch (e) {
       res = e

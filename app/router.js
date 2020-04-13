@@ -2,6 +2,8 @@ module.exports = app => {
   const { router, controller } = app;
   const jenkinsPath = '/api/jenkins';
   const k8sPath = '/api/k8s';
+  const deployPath = '/api/deploy'
+
   /*
     Jenkins API：
     1. View
@@ -39,5 +41,15 @@ module.exports = app => {
   router.resources('namespace', `${k8sPath}/namespaces`, controller.k8s.namespace);
   
   router.post(`${k8sPath}/rollback`, controller.k8s.deployment.rollback);
-  router.post(`${k8sPath}/scale`, controller.k8s.deployment.scale)
+  router.post(`${k8sPath}/scale`, controller.k8s.deployment.scale);
+
+
+
+/*
+   平台相关API
+   1. 登录/登出
+   2. Deploy
+*/
+
+  router.get(`${deployPath}/info`, controller.deploy.index.show);
 };
