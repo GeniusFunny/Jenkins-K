@@ -25,10 +25,20 @@ class JenkinsBuildService extends Service {
     return res;
   }
   async start(req) {
+    const { ctx } = this;
     let res
     try {
-      const { view, job } = req;
+      const { view, job, nextBuildNumber } = req;
       res = await this.jenkinsRequest(this.jenkinsBuild.build(view, job));
+      res = await ctx.app.mysql.insert('deploy', {
+        job_name: job,
+        build_id: nextBuildNumber,
+        status: 'build',
+        finished: false
+      });
+      res = {
+        id: res.insertId
+      }
       if (res.status === 'failed') {
         res.status = res.message;
       } else {

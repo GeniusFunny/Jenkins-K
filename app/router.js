@@ -52,4 +52,7 @@ module.exports = app => {
 */
 
   router.get(`${deployPath}/info`, controller.deploy.index.show);
+  router.get(`${deployPath}/status`, controller.deploy.index.status);
+  router.post(`${deployPath}/updateBuildStatus`, controller.deploy.index.updateBuildStatus);
+  router.post(`${deployPath}/updateDeploymentStatus`, controller.deploy.index.updateDeployStatus);
 };

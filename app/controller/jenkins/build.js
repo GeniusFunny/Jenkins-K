@@ -19,7 +19,8 @@ class JenkinsBuildController extends Controller {
     const { ctx } = this;
     const rule = {
       view: { type: 'string' },
-      job: { type: 'string' }
+      job: { type: 'string' },
+      nextBuildNumber: { type: 'number' }
     }
     try {
       ctx.validate(rule);
